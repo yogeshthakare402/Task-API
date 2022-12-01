@@ -9,9 +9,14 @@ router.use(bodyParser.json());
 router.post("/", async(req,res)=>{
     try{
         // console.log(req.body)
+        let tasks = await Tasks.find();
+        let createdId = tasks.length + 1;
+        console.log(createdId)
+
         let task = await Tasks.create({
             title : req.body.title,
-            is_completed : req.body.is_completed
+            is_completed : req.body.is_completed,
+            id:createdId
         })
         res.status(201).json({
             status:"Success",
@@ -149,24 +154,22 @@ router.post("/", async(req,res)=>{
 
 
 //delete many tasks
-// router.deleteMany("/", async(req,res)=>{
-//     try{
-//         // console.log(req.body)
-//         let tasks = await Tasks.deleteMany(
-            
-//         )
-//         res.status(201).json({
-//             status:"Success",
-//             tasks
-//         })
+router.delete("/", async(req,res)=>{
+    try{
+        // console.log(req.body)
+        let tasks = await Tasks.deleteMany({id:{$gte:3}})
+        res.status(201).json({
+            status:"Success",
+            message:"Tasks deleted"
+        })
 
-//     }catch(e){
-//         res.status(500).json({
-//             status: "Failed",
-//             message: e.message
-//         })
-//     }
-// });
+    }catch(e){
+        res.status(500).json({
+            status: "Failed",
+            message: e.message
+        })
+    }
+});
 
 
 module.exports=router
